@@ -1,8 +1,10 @@
-package com.example.pinauto.Controller;
+package com.example.pinauto.сontroller;
 
-import com.example.pinauto.Entity.Car;
-import com.example.pinauto.Entity.WorkOrder;
-import com.example.pinauto.Service.MainService;
+import com.example.pinauto.entity.Car;
+import com.example.pinauto.entity.OrderStatusHistory;
+import com.example.pinauto.entity.WorkOrder;
+import com.example.pinauto.service.MainService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,12 +42,37 @@ public class MainController {
         return mainService.getAllOrders();
     }
 
+    @GetMapping("/orders/{id}")
+    public ResponseEntity<?> getOrderById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(mainService.getOrderById(id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/orders/{id}/history")
+    public ResponseEntity<?> getOrderStatusHistory(@PathVariable Long id) {
+        try {
+            List<OrderStatusHistory> history = mainService.getOrderStatusHistory(id);
+            return ResponseEntity.ok(history);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PatchMapping("/orders/{id}/status")
     public ResponseEntity<?> updateStatus(@PathVariable Long id, @RequestParam String status) {
         try {
             WorkOrder updatedOrder = mainService.updateOrderStatus(id, status);
             return ResponseEntity.ok(updatedOrder);
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }

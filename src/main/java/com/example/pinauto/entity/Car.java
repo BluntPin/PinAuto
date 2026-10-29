@@ -1,4 +1,4 @@
-package com.example.pinauto.Entity;
+package com.example.pinauto.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,17 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "cars")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorkOrder {
+public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long carId;
-    private String problemDescription;
-    private String status = "В работе";
-    private Double cost;
+    private String brandModel;
+    private String plateNumber;
+    private String ownerName;
+    private String phone;
 }
